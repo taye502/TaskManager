@@ -62,4 +62,41 @@ public class TaskRepository extends BaseRepository {
         task.setUpdatedAt(rs.getTimestamp("updated_at"));
         return task;
     }
+    public boolean isOwner(int taskId, int userId) {
+        String sql = "SELECT count(*) FROM tasks WHERE task_id = ? AND user_id = ?";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, taskId);
+            ps.setInt(2, userId);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            handleSQLException(e, "isOwner");
+        }
+        return false;
+    }
+
+    public boolean delete(int taskId, int userId) {
+        String sql = "DELETE FROM tasks WHERE task_id = ? AND user_id = ?";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, taskId);
+            ps.setInt(2, userId);
+            
+            int updatedRows = ps.executeUpdate();
+            return updatedRows > 0;
+            
+        } catch (SQLException e) {
+            handleSQLException(e, "delete");
+            return false;
+        }
+    }
 }

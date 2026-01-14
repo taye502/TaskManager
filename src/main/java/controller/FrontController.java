@@ -26,6 +26,7 @@ public class FrontController extends HttpServlet {
             actionMap.put("hello", new HelloWorldAction());
             actionMap.put("login", new action.LoginAction());
             actionMap.put("logout", new action.LogoutAction());
+            actionMap.put("task/list", new action.TaskListAction());
             
             System.out.println("FrontController initialized with " + actionMap.size() + " actions");
         } catch (Exception e) {
